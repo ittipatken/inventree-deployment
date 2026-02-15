@@ -120,6 +120,11 @@ services:
             - ${INVENTREE_EXT_VOLUME}:/config:z
         labels:
             - "traefik.enable=true"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.permanent=true"
+            - "traefik.http.routers.inventory-http.middlewares=inventory-redirect"
+            - "traefik.http.routers.inventory-http.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.inventory-http.entrypoints=web"
             - "traefik.http.routers.inventory-https.rule=Host(`inventory.docchula.com`)"
             - "traefik.http.routers.inventory-https.entrypoints=websecure"
             - "traefik.http.routers.inventory-https.tls.certresolver=leresolver"
