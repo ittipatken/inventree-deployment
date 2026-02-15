@@ -2,7 +2,6 @@
 # - PostgreSQL as the database backend
 # - gunicorn as the InvenTree web server
 # - django-q as the InvenTree background worker process
-# - Caddy as a reverse proxy
 # - redis as the cache manager (optional, enabled by default)
 
 # ---------------------
@@ -108,22 +107,3 @@ services:
             # Data volume must map to /home/inventree/data
             - ${INVENTREE_EXT_VOLUME}:/home/inventree/data:z
         restart: unless-stopped
-
-    # caddy acts as reverse proxy and static file server
-    # You can adjust the ports that the proxy listens on via the .env file
-    # https://hub.docker.com/_/caddy
-    inventree-proxy:
-        container_name: inventree-proxy
-        image: caddy:alpine
-        restart: always
-        depends_on:
-            - inventree-server
-        env_file:
-            - stack.env
-        volumes:
-            - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
-            - ${INVENTREE_EXT_VOLUME}/static:/var/www/static:z
-            - ${INVENTREE_EXT_VOLUME}/media:/var/www/media:z
-            - ${INVENTREE_EXT_VOLUME}:/var/log:z
-            - ${INVENTREE_EXT_VOLUME}:/data:z
-            - ${INVENTREE_EXT_VOLUME}:/config:z
