@@ -87,9 +87,14 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.inventree.rule=Host(`inventree.docchula.com`)"
-            - "traefik.http.routers.inventree.entrypoints=websecure"
-            - "traefik.http.routers.inventree.tls.certresolver=letsencrypt"
+            - "traefik.http.middlewares.admin-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.admin-redirect.redirectscheme.permanent=true"
+            - "traefik.http.routers.admin-http.middlewares=admin-redirect"
+            - "traefik.http.routers.admin-http.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.admin-http.entrypoints=web"
+            - "traefik.http.routers.admin-https.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.admin-https.entrypoints=websecure"
+            - "traefik.http.routers.admin-https.tls.certresolver=leresolver"
             - "traefik.http.services.inventree.loadbalancer.server.port=8000"
 
 
