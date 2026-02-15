@@ -128,4 +128,4 @@ services:
             - "traefik.http.routers.inventory-https.rule=Host(`inventory.docchula.com`)"
             - "traefik.http.routers.inventory-https.entrypoints=websecure"
             - "traefik.http.routers.inventory-https.tls.certresolver=leresolver"
-            - "traefik.http.services.inventory.loadbalancer.server.port=8000"
+            - "traefik.http.services.inventory.loadbalancer.server.port=80"
