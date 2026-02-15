@@ -87,15 +87,15 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.middlewares.admin-redirect.redirectscheme.scheme=https"
-            - "traefik.http.middlewares.admin-redirect.redirectscheme.permanent=true"
-            - "traefik.http.routers.admin-http.middlewares=admin-redirect"
-            - "traefik.http.routers.admin-http.rule=Host(`inventory.docchula.com`)"
-            - "traefik.http.routers.admin-http.entrypoints=web"
-            - "traefik.http.routers.admin-https.rule=Host(`inventory.docchula.com`)"
-            - "traefik.http.routers.admin-https.entrypoints=websecure"
-            - "traefik.http.routers.admin-https.tls.certresolver=leresolver"
-            - "traefik.http.services.inventree.loadbalancer.server.port=8000"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.permanent=true"
+            - "traefik.http.routers.inventory-http.middlewares=inventory-redirect"
+            - "traefik.http.routers.inventory-http.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.inventory-http.entrypoints=web"
+            - "traefik.http.routers.inventory-https.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.inventory-https.entrypoints=websecure"
+            - "traefik.http.routers.inventory-https.tls.certresolver=leresolver"
+            - "traefik.http.services.inventory.loadbalancer.server.port=8000"
 
 
     # Background worker process handles long-running or periodic tasks
