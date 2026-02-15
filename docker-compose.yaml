@@ -85,18 +85,6 @@ services:
             # Data volume must map to /home/inventree/data
             - ${INVENTREE_EXT_VOLUME}:/home/inventree/data:z
         restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.middlewares.inventory-redirect.redirectscheme.scheme=https"
-            - "traefik.http.middlewares.inventory-redirect.redirectscheme.permanent=true"
-            - "traefik.http.routers.inventory-http.middlewares=inventory-redirect"
-            - "traefik.http.routers.inventory-http.rule=Host(`inventory.docchula.com`)"
-            - "traefik.http.routers.inventory-http.entrypoints=web"
-            - "traefik.http.routers.inventory-https.rule=Host(`inventory.docchula.com`)"
-            - "traefik.http.routers.inventory-https.entrypoints=websecure"
-            - "traefik.http.routers.inventory-https.tls.certresolver=leresolver"
-            - "traefik.http.services.inventory.loadbalancer.server.port=8000"
-
 
     # Background worker process handles long-running or periodic tasks
     inventree-worker:
@@ -112,3 +100,32 @@ services:
             # Data volume must map to /home/inventree/data
             - ${INVENTREE_EXT_VOLUME}:/home/inventree/data:z
         restart: unless-stopped
+    # caddy acts as reverse proxy and static file server
+    # You can adjust the ports that the proxy listens on via the .env file
+    # https://hub.docker.com/_/caddy
+    inventree-proxy:
+        container_name: inventree-proxy
+        image: caddy:alpine
+        restart: always
+        depends_on:
+            - inventree-server
+        env_file:
+            - stack.env
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+            - ${INVENTREE_EXT_VOLUME}/static:/var/www/static:z
+            - ${INVENTREE_EXT_VOLUME}/media:/var/www/media:z
+            - ${INVENTREE_EXT_VOLUME}:/var/log:z
+            - ${INVENTREE_EXT_VOLUME}:/data:z
+            - ${INVENTREE_EXT_VOLUME}:/config:z
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.scheme=https"
+            - "traefik.http.middlewares.inventory-redirect.redirectscheme.permanent=true"
+            - "traefik.http.routers.inventory-http.middlewares=inventory-redirect"
+            - "traefik.http.routers.inventory-http.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.inventory-http.entrypoints=web"
+            - "traefik.http.routers.inventory-https.rule=Host(`inventory.docchula.com`)"
+            - "traefik.http.routers.inventory-https.entrypoints=websecure"
+            - "traefik.http.routers.inventory-https.tls.certresolver=leresolver"
+            - "traefik.http.services.inventory.loadbalancer.server.port=8000"
